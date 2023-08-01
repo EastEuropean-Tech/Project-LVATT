@@ -3,14 +3,14 @@
 #include <QtWidgets/QMainWindow>
 #include "ui_ProjectLVATT.h"
 
-class ProjectLVATT : public QMainWindow
+class LVATTMainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    ProjectLVATT(QWidget *parent = nullptr);
-    ~ProjectLVATT();
+    LVATTMainWindow(QWidget *parent = nullptr);
+    ~LVATTMainWindow();
 
 private:
-    Ui::ProjectLVATTClass ui;
+    Ui::LVATTMainWindowClass ui;
 };
