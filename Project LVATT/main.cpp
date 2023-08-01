@@ -4,7 +4,7 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    ProjectLVATT w;
+    LVATTMainWindow w;
     w.show();
     return a.exec();
 }
