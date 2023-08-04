@@ -34,11 +34,13 @@
     <QtInstall>6.6.0_msvc2019_64</QtInstall>
     <QtModules>core;gui;widgets</QtModules>
     <QtBuildConfig>debug</QtBuildConfig>
+    <QtQMakeTemplate>vcapp</QtQMakeTemplate>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
     <QtInstall>6.6.0_msvc2019_64</QtInstall>
     <QtModules>core;gui;widgets</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
+    <QtQMakeTemplate>vcapp</QtQMakeTemplate>
   </PropertyGroup>
   <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
     <Message Importance="High" Text="QtMsBuild: could not locate qt.targets, qt.props; project may not build correctly." />
@@ -67,6 +69,16 @@
     <ClCompile>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
+    <QtMoc>
+      <OverrideClCompile>extend</OverrideClCompile>
+    </QtMoc>
+    <QtRcc>
+      <OverrideClCompile>extend</OverrideClCompile>
+    </QtRcc>
+    <Link>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);$(Qt_LIBS_);</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\Libraries\Qt\6.6.0\msvc2019_64\lib\</AdditionalLibraryDirectories>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -77,6 +89,16 @@
     <ClCompile>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
+    <QtMoc>
+      <OverrideClCompile>extend</OverrideClCompile>
+    </QtMoc>
+    <QtRcc>
+      <OverrideClCompile>extend</OverrideClCompile>
+    </QtRcc>
+    <Link>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);$(Qt_LIBS_);</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\Libraries\Qt\6.6.0\msvc2019_64\lib\</AdditionalLibraryDirectories>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
     <ClCompile>
@@ -106,7 +128,6 @@
     <QtRcc Include="ProjectLVATT.qrc" />
     <QtUic Include="ProjectLVATT.ui" />
     <QtMoc Include="ProjectLVATT.h" />
-    <ClCompile Include="ProjectLVATT.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
