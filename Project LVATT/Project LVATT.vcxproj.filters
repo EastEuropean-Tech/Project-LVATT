@@ -32,9 +32,6 @@
     <QtMoc Include="ProjectLVATT.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <ClCompile Include="ProjectLVATT.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
