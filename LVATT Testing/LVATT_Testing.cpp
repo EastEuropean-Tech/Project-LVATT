@@ -5,9 +5,16 @@
 #include <vector>
 #include <complex>
 #include <format>
-#include <sndfile.h>
+#include <sndfile.hh>
+#include <DspFilters/Dsp.h>
 
 /* Parameters */
+/* Input */
+const int InSampleRate = 2000000; /* 2Mhz */
+
+/* Low Pass Filter */
+const int CutOffFrequency = 200000; /* 200Khz */
+
 /* Output */
 const int OutSampleRate = 48000; /* 48KHz */
 const int OutChannels = 1;
@@ -17,42 +24,73 @@ int main()
 	NosLib::Console::InitializeModifiers::EnableUnicode();
     NosLib::Console::InitializeModifiers::EnableANSI();
 
-	/* Open IQ file */
-	std::ifstream inputFile("input.iq", std::ios::binary);
-	inputFile.seekg(0, std::ios::end);
+	SndfileHandle readWavFile("input.wav");
 
-	/* Calculate number of samples */
-	size_t numberOfSamples = inputFile.tellg() / sizeof(std::complex<float>);
+	// Print some information about the file
+	std::wcout << L"Sample rate: " << readWavFile.samplerate() << std::endl;
+	std::wcout << L"Channels: " << readWavFile.channels() << std::endl;
+	std::wcout << L"Samples: " << readWavFile.frames() << std::endl;
 
-	std::complex<float>* iqData = new std::complex<float>;
+	// Allocate memory for the samples
+	float* samples = new float[readWavFile.frames()];
+	float** channels = &samples;
 
-	/* read data and put it into array */
-	inputFile.read(reinterpret_cast<char*>(iqData), numberOfSamples * sizeof(std::complex<float>));
-	inputFile.close();
+	readWavFile.readf(samples, readWavFile.frames());
+
 
 	/* LOW PASS FILTER */
 	/*
 	A low pass filter will remove all frequency above its cut off frequency,
-	or you could say it only allows frequencies below its cut off frenquency through
-	implement below
+	or you could say it only allows frequencies below its cut off frequency through
 	*/
 
-	/* NARROW BAND FREQUENCE DEMODULATION */
+	Dsp::SimpleFilter<Dsp::Bessel::LowPass<3>, 1> filter;
+	filter.setup(3, InSampleRate, CutOffFrequency);
+	filter.process(readWavFile.frames(), channels);
+
+	/* NARROW BAND FREQUENCY DEMODULATION */
 	/*
-	takes in the filtered data and demodulates. so it separates the carrier signal from the info singal.
+	takes in the filtered data and demodulates. so it separates the carrier signal from the info signal.
 	implement below
 	*/
 
 	/* write audio data into wav file */
-	SF_INFO wavInfo;
-	wavInfo.samplerate = OutSampleRate;
-	wavInfo.channels = OutChannels;
-	wavInfo.format = SF_FORMAT_WAV | SF_FORMAT_PCM_16;
+	SndfileHandle writeWavFile("output.wav",SFM_WRITE, SF_FORMAT_WAV | SF_FORMAT_PCM_16, OutChannels, OutSampleRate);
 
-	SNDFILE* wavFile = sf_open("output.wav", SFM_WRITE, &wavInfo);
-	//sf_writef_float(wavFile, reinterpret_cast<float*>(modulatedSamples), numSamples / decimation);
-	sf_close(wavFile);
+	writeWavFile.writef(samples, readWavFile.frames());
 
 	wprintf(L"Press any button to continue"); _getch();
     return 0;
 }
+
+
+/* previous code */
+
+///* Open IQ file */
+//std::ifstream inputFile("input.iq", std::ios::binary);
+//inputFile.seekg(0, std::ios::end);
+//
+///* Calculate number of samples */
+//size_t inSampleCount = inputFile.tellg() / sizeof(std::complex<float>);
+//size_t outSampleCount = inSampleCount / (InSampleRate / OutSampleRate);
+//
+//std::wcout << inSampleCount << std::endl;
+//std::wcout << outSampleCount << std::endl;
+//
+//std::complex<float>* iqData = new std::complex<float>[inSampleCount];
+//
+///* read data and put it into array */
+//inputFile.read(reinterpret_cast<char*>(iqData), inSampleCount * sizeof(std::complex<float>));
+//inputFile.close();
+//
+//float* output = new float[inSampleCount];
+//
+//for (int i = 0; i < inSampleCount; i++)
+//{
+//	if (i % (InSampleRate / OutSampleRate) != 0)
+//	{
+//		continue;
+//	}
+//
+//	output[i] = iqData[i].real();
+//}

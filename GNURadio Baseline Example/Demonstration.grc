@@ -73,7 +73,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [768, 224.0]
+    coordinate: [672, 288.0]
     rotation: 0
     state: enabled
 - name: audio_sink_0
@@ -90,7 +90,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1064, 256.0]
+    coordinate: [888, 272.0]
     rotation: 0
     state: enabled
 - name: blocks_file_source_0
@@ -100,7 +100,7 @@ blocks:
     alias: ''
     begin_tag: pmt.PMT_NIL
     comment: ''
-    file: C:\Programing Projects\C++\Project LVATT\out.iq
+    file: C:\Programing Projects\C++\Project LVATT\GNURadio Baseline Example\Input.iq
     length: '0'
     maxoutbuf: '0'
     minoutbuf: '0'
@@ -112,7 +112,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [184, 280.0]
+    coordinate: [320, 280.0]
     rotation: 0
     state: enabled
 - name: blocks_wavfile_sink_0
@@ -126,7 +126,7 @@ blocks:
     bits_per_sample3: FORMAT_VORBIS
     bits_per_sample4: FORMAT_PCM_16
     comment: ''
-    file: C:\Programing Projects\C++\Project LVATT\out.wav
+    file: out.wav
     format: FORMAT_WAV
     nchan: '1'
     samp_rate: '48000'
@@ -134,7 +134,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1072, 352.0]
+    coordinate: [888, 328.0]
     rotation: 0
     state: enabled
 - name: low_pass_filter_0
@@ -153,82 +153,20 @@ blocks:
     samp_rate: samp_rate
     type: fir_filter_ccf
     width: '1000000'
-    win: window.WIN_HAMMING
+    win: window.WIN_BLACKMAN
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [464, 264.0]
+    coordinate: [512, 264.0]
     rotation: 0
     state: enabled
-- name: qtgui_waterfall_sink_x_0
-  id: qtgui_waterfall_sink_x
-  parameters:
-    affinity: ''
-    alias: ''
-    alpha1: '1.0'
-    alpha10: '1.0'
-    alpha2: '1.0'
-    alpha3: '1.0'
-    alpha4: '1.0'
-    alpha5: '1.0'
-    alpha6: '1.0'
-    alpha7: '1.0'
-    alpha8: '1.0'
-    alpha9: '1.0'
-    axislabels: 'True'
-    bw: samp_rate
-    color1: '0'
-    color10: '0'
-    color2: '0'
-    color3: '0'
-    color4: '0'
-    color5: '0'
-    color6: '0'
-    color7: '0'
-    color8: '0'
-    color9: '0'
-    comment: ''
-    fc: freq
-    fftsize: '1024'
-    freqhalf: 'True'
-    grid: 'False'
-    gui_hint: ''
-    int_max: '10'
-    int_min: '-140'
-    label1: ''
-    label10: ''
-    label2: ''
-    label3: ''
-    label4: ''
-    label5: ''
-    label6: ''
-    label7: ''
-    label8: ''
-    label9: ''
-    legend: 'True'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    name: '""'
-    nconnections: '1'
-    showports: 'False'
-    type: complex
-    update_time: '0.10'
-    wintype: window.WIN_BLACKMAN_hARRIS
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [760, 360.0]
-    rotation: 0
-    state: true
 
 connections:
 - [analog_nbfm_rx_0, '0', audio_sink_0, '0']
 - [analog_nbfm_rx_0, '0', blocks_wavfile_sink_0, '0']
 - [blocks_file_source_0, '0', low_pass_filter_0, '0']
 - [low_pass_filter_0, '0', analog_nbfm_rx_0, '0']
-- [low_pass_filter_0, '0', qtgui_waterfall_sink_x_0, '0']
 
 metadata:
   file_format: 1
