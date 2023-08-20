@@ -73,7 +73,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [672, 288.0]
+    coordinate: [720, 288.0]
     rotation: 0
     state: enabled
 - name: audio_sink_0
@@ -90,7 +90,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [888, 272.0]
+    coordinate: [984, 272.0]
     rotation: 0
     state: enabled
 - name: blocks_file_source_0
@@ -134,7 +134,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [888, 328.0]
+    coordinate: [984, 336.0]
     rotation: 0
     state: enabled
 - name: low_pass_filter_0
@@ -158,7 +158,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [512, 264.0]
+    coordinate: [544, 264.0]
     rotation: 0
     state: enabled
 

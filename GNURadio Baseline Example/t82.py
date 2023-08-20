@@ -13,6 +13,7 @@ from packaging.version import Version as StrictVersion
 from PyQt5 import Qt
 from gnuradio import qtgui
 from gnuradio import analog
+from gnuradio import audio
 from gnuradio import blocks
 import pmt
 from gnuradio import filter
@@ -93,6 +94,7 @@ class t82(gr.top_block, Qt.QWidget):
             )
         self.blocks_file_source_0 = blocks.file_source(gr.sizeof_gr_complex*1, 'C:\\Programing Projects\\C++\\Project LVATT\\GNURadio Baseline Example\\Input.iq', False, 0, 0)
         self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
+        self.audio_sink_0 = audio.sink(48000, '', True)
         self.analog_nbfm_rx_0 = analog.nbfm_rx(
         	audio_rate=48000,
         	quad_rate=480000,
@@ -104,6 +106,7 @@ class t82(gr.top_block, Qt.QWidget):
         ##################################################
         # Connections
         ##################################################
+        self.connect((self.analog_nbfm_rx_0, 0), (self.audio_sink_0, 0))
         self.connect((self.analog_nbfm_rx_0, 0), (self.blocks_wavfile_sink_0, 0))
         self.connect((self.blocks_file_source_0, 0), (self.low_pass_filter_0, 0))
         self.connect((self.low_pass_filter_0, 0), (self.analog_nbfm_rx_0, 0))
