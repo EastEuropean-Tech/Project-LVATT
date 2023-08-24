@@ -89,6 +89,16 @@ void DownSample(std::complex<float>* inputComplexSignal, const size_t& inputArra
 	}
 }
 
+void ListFloatValues(std::complex<float>* inComplexArray,size_t arraySize)
+{
+	int stepSize = arraySize / 1000; /* 1000 samples shown */
+
+	for (int i = 0; i < arraySize; i += stepSize)
+	{
+		wprintf(L"%f : %f\n", inComplexArray[i].real(), inComplexArray[i].imag());
+	}
+}
+
 void ListFloatValues(float* inArray, size_t arraySize)
 {
 	int stepSize = arraySize / 1000; /* 1000 samples shown */
@@ -115,14 +125,17 @@ int main()
 	NosLib::Console::InitializeModifiers::EnableUnicode();
     NosLib::Console::InitializeModifiers::EnableANSI();
 
-	TestWorking();
+	//TestWorking();
 
 	/* Open IQ file */
-	std::ifstream inputFile("input.iq", std::ios::binary);
+	std::ifstream inputFile("Input.iq", std::ios::binary);
 	inputFile.seekg(0, std::ios::end);
 
 	/* Calculate number of samples */
 	size_t inSampleCount = inputFile.tellg() / sizeof(std::complex<float>);
+
+	/* reset stream position */
+	inputFile.seekg(0, std::ios::beg);
 
 	std::wcout <<L"In Sample Count:\t" << inSampleCount << std::endl;
 
@@ -145,13 +158,16 @@ int main()
 	DownSample(filteredComplexSignal, inSampleCount, downSampledComplexSignal, &outSampleCount);
 	std::wcout << L"Out Sample Count:\t" << outSampleCount << std::endl;
 
+	ListFloatValues(filteredComplexSignal, inSampleCount);
+	ListFloatValues(downSampledComplexSignal, inSampleCount);
+
 	/* NARROW BAND FREQUENCY DEMODULATION */
 	/*
 	takes in the filtered data and demodulates. so it separates the carrier signal from the info signal.
 	implement below
 	*/
 
-	float* audio = new float[inSampleCount];
+	float* audio = new float[outSampleCount];
 	fmDemodulate(downSampledComplexSignal, outSampleCount, OutSampleRate, CarrierFrequency, audio);
 
 	/* write audio data into wav file */
@@ -164,3 +180,24 @@ int main()
 	wprintf(L"Press any button to continue"); _getch();
     return 0;
 }
+
+////* Open IQ file */
+///std::ofstream TestoutputFile("outTest", std::ios::binary);
+///
+///float testOut[] = {1,2,3,4,5,6};
+///
+///TestoutputFile.write(reinterpret_cast<char*>(testOut), 6 * sizeof(float));
+///TestoutputFile.close();
+///
+///std::ifstream TestinputFile("outTest", std::ios::binary);
+///
+///NosLib::DynamicArray<std::complex<float>> TestinputComplexSignal(3);
+///std::complex<float> testIn[3];
+///
+////* read data and put it into array */
+///TestinputFile.read(reinterpret_cast<char*>(TestinputComplexSignal.GetArray()), 3 * sizeof(std::complex<float>));
+///TestinputFile.close();
+///
+///ListFloatValues(TestinputComplexSignal.GetArray(), 3);
+///
+///return 0;
