@@ -21,6 +21,9 @@
   <ItemGroup>
     <ClCompile Include="LVATT_Testing.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Headers\WAV.hpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -104,7 +107,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>D:\Libraries\NosLib\Build\NosLib\$(Platform)\$(Configuration)\;D:\Libraries\Boost\stage\lib;C:\Programing Projects\C++\Project LVATT\External\sndfile\lib;C:\Programing Projects\C++\Project LVATT\External\DSPFilters\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);sndfile.lib;DSPFiltersd.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);DSPFiltersd.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -126,7 +129,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>D:\Libraries\NosLib\Build\NosLib\$(Platform)\$(Configuration)\;D:\Libraries\Boost\stage\lib;C:\Programing Projects\C++\Project LVATT\External\sndfile\lib;C:\Programing Projects\C++\Project LVATT\External\DSPFilters\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);sndfile.lib;DSPFilters.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);DSPFilters.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -144,7 +147,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>D:\Libraries\NosLib\Build\NosLib\$(Platform)\$(Configuration)\;D:\Libraries\Boost\stage\lib;C:\Programing Projects\C++\Project LVATT\External\sndfile\lib;C:\Programing Projects\C++\Project LVATT\External\DSPFilters\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);sndfile.lib;DSPFiltersd.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);DSPFiltersd.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -166,7 +169,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>D:\Libraries\NosLib\Build\NosLib\$(Platform)\$(Configuration)\;D:\Libraries\Boost\stage\lib;C:\Programing Projects\C++\Project LVATT\External\sndfile\lib;C:\Programing Projects\C++\Project LVATT\External\DSPFilters\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);sndfile.lib;DSPFilters.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);DSPFilters.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

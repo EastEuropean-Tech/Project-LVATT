@@ -1,6 +1,5 @@
 #include <NosLib/Console.hpp>
 #include <NosLib/DynamicArray.hpp>
-
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <iostream>
@@ -8,8 +7,9 @@
 #include <vector>
 #include <complex>
 #include <format>
-#include <sndfile.hh>
 #include <DspFilters/Dsp.h>
+
+#include "Headers/WAV.hpp"
 
 /* Parameters */
 /* Input */
@@ -131,10 +131,10 @@ int main()
 	float* audio = new float[outSampleCount];
 	fmDemodulate(downSampledComplexSignal, outSampleCount, OutSampleRate, CarrierFrequency, audio);
 
-	/* write audio data into wav file */
-	SndfileHandle writeWavFile("output.wav",SFM_WRITE, SF_FORMAT_WAV | SF_FORMAT_PCM_16, OutChannels, OutSampleRate);
+	std::wcout << outSampleCount << std::endl;
+	std::wcout << outSampleCount*sizeof(float) << std::endl;
 
-	writeWavFile.writef(audio, outSampleCount);
+	WriteData(L"Test.wav", audio, outSampleCount, OutChannels, OutSampleRate);
 
 	wprintf(L"Press any button to continue"); _getch();
     return 0;
