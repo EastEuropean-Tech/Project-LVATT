@@ -16,7 +16,8 @@
 const int InSampleRate = 2000000; /* 2Mhz */
 
 /* Low Pass Filter */
-const int CutOffFrequency = 200000; /* 200Khz */
+//const int CutOffFrequency = 200000; /* 200Khz */
+const int CutOffFrequency = 5000000; /* 5Mhz */
 
 /* Frequency Demodulation */
 const int CarrierFrequency = 446155200; /* 446.155Mhz */
@@ -74,55 +75,24 @@ void LowPassFilterComplex(std::complex<float>* inputComplexSignal, size_t inputA
 	}
 }
 
-void DownSample(std::complex<float>* inputComplexSignal, const size_t& inputArraySize, std::complex<float>* downSampleComplexSignal, size_t* outArraySize)
+void DownSample(std::complex<float>* inputComplexSignal, const size_t& inputArraySize, std::complex<float>** downSampleComplexSignal, size_t* outArraySize)
 {
 	int DecimateIndex = (InSampleRate / OutSampleRate);
 	(*outArraySize) = 0;
 
+	(*downSampleComplexSignal) = new std::complex<float>[inputArraySize / DecimateIndex];
+
 	for (int i = 0; i < inputArraySize; i+= DecimateIndex)
 	{
-		downSampleComplexSignal[(*outArraySize)] = inputComplexSignal[i];
+		(*downSampleComplexSignal)[(*outArraySize)] = inputComplexSignal[i];
 		(*outArraySize)++;
 	}
-}
-
-void ListFloatValues(std::complex<float>* inComplexArray,size_t arraySize)
-{
-	int stepSize = arraySize / 1000; /* 1000 samples shown */
-
-	for (int i = 0; i < arraySize; i += stepSize)
-	{
-		wprintf(L"%f : %f\n", inComplexArray[i].real(), inComplexArray[i].imag());
-	}
-}
-
-void ListFloatValues(float* inArray, size_t arraySize)
-{
-	int stepSize = arraySize / 1000; /* 1000 samples shown */
-
-	for (int i = 0; i < arraySize; i+= stepSize)
-	{
-		wprintf(L"%f\n", inArray[i]);
-	}
-}
-
-void TestWorking()
-{
-	SndfileHandle readWavFile("input.wav");
-
-	float* samples = new float[readWavFile.frames()];
-
-	readWavFile.readf(samples, readWavFile.frames());
-
-	ListFloatValues(samples, readWavFile.frames());
 }
 
 int main()
 {
 	NosLib::Console::InitializeModifiers::EnableUnicode();
     NosLib::Console::InitializeModifiers::EnableANSI();
-
-	//TestWorking();
 
 	/* Open IQ file */
 	std::ifstream inputFile("Input.iq", std::ios::binary);
@@ -134,12 +104,10 @@ int main()
 	/* reset stream position */
 	inputFile.seekg(0, std::ios::beg);
 
-	std::wcout <<L"In Sample Count:\t" << inSampleCount << std::endl;
-
-	NosLib::DynamicArray<std::complex<float>> inputComplexSignal(inSampleCount);
+	std::complex<float>* ComplexSignal = new std::complex<float>[inSampleCount];
 
 	/* read data and put it into array */
-	inputFile.read(reinterpret_cast<char*>(inputComplexSignal.GetArray()), inSampleCount * sizeof(std::complex<float>));
+	inputFile.read(reinterpret_cast<char*>(ComplexSignal), inSampleCount * sizeof(std::complex<float>));
 	inputFile.close();
 
 	/* LOW PASS FILTER */
@@ -147,19 +115,12 @@ int main()
 	A low pass filter will remove all frequency above its cut off frequency,
 	or you could say it only allows frequencies below its cut off frequency through
 	*/
-	std::complex<float>* filteredComplexSignal = new std::complex<float>[inSampleCount];
-	LowPassFilterComplex(inputComplexSignal.GetArray(), inSampleCount, filteredComplexSignal);
+	LowPassFilterComplex(ComplexSignal, inSampleCount, ComplexSignal);
 
-	std::complex<float>* downSampledComplexSignal = new std::complex<float>[inSampleCount];
+	std::complex<float>* downSampledComplexSignal = nullptr;
 	size_t outSampleCount;
-	DownSample(filteredComplexSignal, inSampleCount, downSampledComplexSignal, &outSampleCount);
-	std::wcout << L"Out Sample Count:\t" << outSampleCount << std::endl;
-
-	ListFloatValues(filteredComplexSignal, inSampleCount);
-	wprintf(L"===============================================\n");
-	wprintf(L"===============================================\n");
-	wprintf(L"===============================================\n");
-	ListFloatValues(downSampledComplexSignal, outSampleCount);
+	DownSample(ComplexSignal, inSampleCount, &downSampledComplexSignal, &outSampleCount);
+	delete[] ComplexSignal;
 
 	/* NARROW BAND FREQUENCY DEMODULATION */
 	/*
@@ -174,8 +135,6 @@ int main()
 	SndfileHandle writeWavFile("output.wav",SFM_WRITE, SF_FORMAT_WAV | SF_FORMAT_PCM_16, OutChannels, OutSampleRate);
 
 	writeWavFile.writef(audio, outSampleCount);
-
-	ListFloatValues(audio, outSampleCount);
 
 	wprintf(L"Press any button to continue"); _getch();
     return 0;
