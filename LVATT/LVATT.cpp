@@ -79,7 +79,7 @@ void DownSample(std::complex<float>* inputComplexSignal, const size_t& inputArra
 
 int main()
 {
-	std::chrono::system_clock::time_point start = std::chrono::high_resolution_clock::now();
+	auto start = std::chrono::high_resolution_clock::now();
 
 	/* Open IQ file */
 	std::ifstream inputFile("Input.iq", std::ios::binary);
@@ -128,7 +128,7 @@ int main()
 	delete[] downSampledComplexSignal;
 	delete[] audio;
 
-	std::chrono::system_clock::time_point stop = std::chrono::high_resolution_clock::now();
+	auto stop = std::chrono::high_resolution_clock::now();
 
 	printf("overall, took: %lld milliseconds\n", std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count());
 
