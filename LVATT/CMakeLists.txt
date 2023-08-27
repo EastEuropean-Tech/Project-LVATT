@@ -2,6 +2,11 @@
 
 project (LVATT)
 
-# Add source to this project's executable.
 add_executable (${PROJECT_NAME} "LVATT.cpp")
 target_link_libraries(${PROJECT_NAME} PRIVATE -static DSPFilters)
+
+# make executable static
+if(WIN32)
+target_compile_options(${PROJECT_NAME} PUBLIC /MT)
+target_link_options(${PROJECT_NAME} PUBLIC /INCREMENTAL:NO /NODEFAULTLIB:MSVCRT)
+endif(WIN32)

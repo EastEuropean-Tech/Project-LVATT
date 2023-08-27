@@ -4,7 +4,7 @@
 #include <fstream>
 #include <bitset>
 
-#include "NosLib/BinaryMath.hpp"
+#include "../NosLib/BinaryMath.hpp"
 
 /* float to little endian short array */
 inline void f2les_array(const float* src, short* dest, int count, int normalize)

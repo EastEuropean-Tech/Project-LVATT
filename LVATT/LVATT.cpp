@@ -7,8 +7,6 @@
 #include <format>
 #include <chrono>
 
-#include <conio.h>
-
 #include <DspFilters/Dsp.h>
 #include "Headers/WAV.hpp"
 
@@ -81,7 +79,7 @@ void DownSample(std::complex<float>* inputComplexSignal, const size_t& inputArra
 
 int main()
 {
-	std::chrono::steady_clock::time_point start = std::chrono::high_resolution_clock::now();
+	std::chrono::system_clock::time_point start = std::chrono::high_resolution_clock::now();
 
 	/* Open IQ file */
 	std::ifstream inputFile("Input.iq", std::ios::binary);
@@ -130,10 +128,10 @@ int main()
 	delete[] downSampledComplexSignal;
 	delete[] audio;
 
-	std::chrono::steady_clock::time_point stop = std::chrono::high_resolution_clock::now();
+	std::chrono::system_clock::time_point stop = std::chrono::high_resolution_clock::now();
 
 	printf("overall, took: %lld milliseconds\n", std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count());
 
-	printf("Press any button to continue"); _getch();
+	printf("Press any button to continue"); std::cin.get();
 	return 0;
 }

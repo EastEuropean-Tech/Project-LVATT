@@ -34,11 +34,7 @@
             "displayName": "x64 Release",
             "inherits": "x64-debug",
             "cacheVariables": {
-                "CMAKE_BUILD_TYPE": "Release",
-                "CMAKE_CXX_FLAGS": "/O2 /WX- /MT",
-                "CMAKE_CXX_FLAGS_RELEASE": "/O2 /WX- /MT",
-                "CMAKE_C_FLAGS": "/O2 /WX- /MT",
-                "CMAKE_C_FLAGS_RELEASE": "/O2 /WX- /MT"
+                "CMAKE_BUILD_TYPE": "Release"
             }
         },
         {
