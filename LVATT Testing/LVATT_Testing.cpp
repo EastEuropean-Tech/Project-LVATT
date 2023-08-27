@@ -7,8 +7,9 @@
 #include <vector>
 #include <complex>
 #include <format>
-#include <DspFilters/Dsp.h>
+#include <chrono>
 
+#include <DspFilters/Dsp.h>
 #include "Headers/WAV.hpp"
 
 /* Parameters */
@@ -26,22 +27,11 @@ const int CarrierFrequency = 446155200; /* 446.155Mhz */
 const int OutSampleRate = 48000; /* 48KHz */
 const int OutChannels = 1;
 
-void fmDemodulate(std::complex<float>* complexSignal, const size_t& complexSignalSize, const float& sampleRate, const float& carrierFrequency, float* outArray)
-{
-	// Calculate carrier wave parameters
-	float angularFrequency = 2.0 * M_PI * carrierFrequency / sampleRate;
-	std::complex <float> carrier(std::cos(angularFrequency), -std::sin(angularFrequency)); // Complex carrier
-
-	std::complex<float> prevSample = complexSignal[0];
-
+void fmDemodulate(std::complex<float>* complexSignal, const size_t& complexSignalSize, float* outArray)
+{	
 	for (size_t i = 1; i < complexSignalSize; i++)
 	{
-		std::complex<float> demodulatedSample = complexSignal[i] * std::conj(prevSample);
-
-		float demodulatedValue = std::arg(demodulatedSample); // Extract phase of demodulated sample
-		outArray[i] = demodulatedValue;
-
-		prevSample = complexSignal[i];
+		outArray[i] = std::arg(complexSignal[i] * std::conj(complexSignal[i - 1]));
 	}
 }
 
@@ -94,6 +84,8 @@ int main()
 	NosLib::Console::InitializeModifiers::EnableUnicode();
     NosLib::Console::InitializeModifiers::EnableANSI();
 
+	std::chrono::steady_clock::time_point start = std::chrono::high_resolution_clock::now();
+
 	/* Open IQ file */
 	std::ifstream inputFile("Input.iq", std::ios::binary);
 	inputFile.seekg(0, std::ios::end);
@@ -107,6 +99,7 @@ int main()
 	std::complex<float>* ComplexSignal = new std::complex<float>[inSampleCount];
 
 	/* read data and put it into array */
+	wprintf(L"Reading complex signal from file\n");
 	inputFile.read(reinterpret_cast<char*>(ComplexSignal), inSampleCount * sizeof(std::complex<float>));
 	inputFile.close();
 
@@ -115,10 +108,12 @@ int main()
 	A low pass filter will remove all frequency above its cut off frequency,
 	or you could say it only allows frequencies below its cut off frequency through
 	*/
+	wprintf(L"Filtering complex signal\n");
 	LowPassFilterComplex(ComplexSignal, inSampleCount, ComplexSignal);
 
 	std::complex<float>* downSampledComplexSignal = nullptr;
 	size_t outSampleCount;
+	wprintf(L"Down sampling complex signal\n");
 	DownSample(ComplexSignal, inSampleCount, &downSampledComplexSignal, &outSampleCount);
 	delete[] ComplexSignal;
 
@@ -129,12 +124,18 @@ int main()
 	*/
 
 	float* audio = new float[outSampleCount];
-	fmDemodulate(downSampledComplexSignal, outSampleCount, OutSampleRate, CarrierFrequency, audio);
+	wprintf(L"FM Demodulating the complex signal\n");
+	fmDemodulate(downSampledComplexSignal, outSampleCount, audio);
 
-	std::wcout << outSampleCount << std::endl;
-	std::wcout << outSampleCount*sizeof(float) << std::endl;
-
+	wprintf(L"Writing audio signal to file\n");
 	WriteData(L"Test.wav", audio, outSampleCount, OutChannels, OutSampleRate);
+
+	delete[] downSampledComplexSignal;
+	delete[] audio;
+
+	std::chrono::steady_clock::time_point stop = std::chrono::high_resolution_clock::now();
+
+	wprintf(L"overall, took: %d milliseconds\n", std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count());
 
 	wprintf(L"Press any button to continue"); _getch();
     return 0;
