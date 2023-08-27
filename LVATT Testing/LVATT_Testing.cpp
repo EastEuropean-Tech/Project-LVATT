@@ -25,25 +25,22 @@ const int CarrierFrequency = 446155200; /* 446.155Mhz */
 const int OutSampleRate = 48000; /* 48KHz */
 const int OutChannels = 1;
 
-// Function to perform FM demodulation
-void fmDemodulate(std::complex<float>* complexSignal, const size_t& complexSignalSize, const float& samplingRate, const float& carrierFrequency, float* outArray)
+void fmDemodulate(std::complex<float>* complexSignal, const size_t& complexSignalSize, const float& sampleRate, const float& carrierFrequency, float* outArray)
 {
-	// Calculate the phase difference between adjacent samples
+	// Calculate carrier wave parameters
+	float angularFrequency = 2.0 * M_PI * carrierFrequency / sampleRate;
+	std::complex <float> carrier(std::cos(angularFrequency), -std::sin(angularFrequency)); // Complex carrier
+
+	std::complex<float> prevSample = complexSignal[0];
+
 	for (size_t i = 1; i < complexSignalSize; i++)
 	{
-		std::complex<float> prevSample = complexSignal[i - 1];
-		std::complex<float> currentSample = complexSignal[i];
+		std::complex<float> demodulatedSample = complexSignal[i] * std::conj(prevSample);
 
-		// Calculate phase difference
-		float phaseDifference = std::arg(currentSample * std::conj(prevSample));
-
-		// Calculate instantaneous frequency
-		float instantaneousFrequency = (phaseDifference / (2 * M_PI)) * samplingRate;
-
-		// Subtract carrier frequency to get the modulating signal
-		float demodulatedValue = instantaneousFrequency - carrierFrequency;
-
+		float demodulatedValue = std::arg(demodulatedSample); // Extract phase of demodulated sample
 		outArray[i] = demodulatedValue;
+
+		prevSample = complexSignal[i];
 	}
 }
 
@@ -159,7 +156,10 @@ int main()
 	std::wcout << L"Out Sample Count:\t" << outSampleCount << std::endl;
 
 	ListFloatValues(filteredComplexSignal, inSampleCount);
-	ListFloatValues(downSampledComplexSignal, inSampleCount);
+	wprintf(L"===============================================\n");
+	wprintf(L"===============================================\n");
+	wprintf(L"===============================================\n");
+	ListFloatValues(downSampledComplexSignal, outSampleCount);
 
 	/* NARROW BAND FREQUENCY DEMODULATION */
 	/*
@@ -180,24 +180,3 @@ int main()
 	wprintf(L"Press any button to continue"); _getch();
     return 0;
 }
-
-////* Open IQ file */
-///std::ofstream TestoutputFile("outTest", std::ios::binary);
-///
-///float testOut[] = {1,2,3,4,5,6};
-///
-///TestoutputFile.write(reinterpret_cast<char*>(testOut), 6 * sizeof(float));
-///TestoutputFile.close();
-///
-///std::ifstream TestinputFile("outTest", std::ios::binary);
-///
-///NosLib::DynamicArray<std::complex<float>> TestinputComplexSignal(3);
-///std::complex<float> testIn[3];
-///
-////* read data and put it into array */
-///TestinputFile.read(reinterpret_cast<char*>(TestinputComplexSignal.GetArray()), 3 * sizeof(std::complex<float>));
-///TestinputFile.close();
-///
-///ListFloatValues(TestinputComplexSignal.GetArray(), 3);
-///
-///return 0;
