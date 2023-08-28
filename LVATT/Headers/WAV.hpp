@@ -6,6 +6,8 @@
 
 #include "../NosLib/BinaryMath.hpp"
 
+#include "Common.hpp"
+
 /* float to little endian short array */
 inline void f2les_array(const float* src, short* dest, int count, int normalize)
 {
@@ -36,7 +38,7 @@ void WriteData(const std::filesystem::path& filePath, float* data, const size_t&
 		return;
 	}
 
-	std::ofstream wavWriteStream(filePath, std::ios::binary);
+	std::ofstream wavWriteStream(filePath, std::ios::binary | std::ios::trunc);
 
 	char* fileSize = nullptr;
 	char* fmtSubChunkSize = nullptr;
