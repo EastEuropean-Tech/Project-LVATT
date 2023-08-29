@@ -73,17 +73,7 @@ int main()
 
 	start = std::chrono::high_resolution_clock::now();
 
-	char* input[8];
-	input[0] = (char*)R"(C:\Programing Projects\C++\Project LVATT\build\x64-release\LVATT\LVATT.exe)";
-	input[1] = (char*)R"(--threads)";
-	input[2] = (char*)R"(14)";
-	input[3] = (char*)R"(C:\Programing Projects\C++\Project LVATT\build\x64-release\LVATT\Test.wav)";
-	input[4] = (char*)"--model";
-	input[5] = (char*)R"(C:\Programing Projects\C++\Project LVATT\models\ggml-medium.bin)";
-	input[6] = (char*)"--language";
-	input[7] = (char*)"auto";
-
-	TranscribeAudio(8, input);
+	TranscribeAudio();
 
 	stop = std::chrono::high_resolution_clock::now();
 
