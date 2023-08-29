@@ -3,8 +3,8 @@
 project (LVATT)
 
 add_executable (${PROJECT_NAME} "LVATT.cpp" "Headers/AudioTranscribing.hpp" "Headers/Common.hpp" "Headers/SignalProcessing.hpp" "Headers/WAV.hpp")
-target_link_libraries(${PROJECT_NAME} PRIVATE -static DSPFilters)
-target_link_libraries(${PROJECT_NAME} PRIVATE whisper)
+target_link_libraries(${PROJECT_NAME} -static DSPFilters)
+target_link_libraries(${PROJECT_NAME} -static whisper)
 
 # make executable static
 if(WIN32)
