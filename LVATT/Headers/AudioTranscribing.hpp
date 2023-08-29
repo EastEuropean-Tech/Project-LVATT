@@ -74,6 +74,7 @@ int TranscribeAudio(const ArrayWrapper<float>& audio)
 
 		wparams.print_realtime = false;
 		wparams.language = "auto";
+		wparams.translate = true;
 		wparams.n_threads = 14;
 
 		wparams.new_segment_callback = whisper_print_segment_callback;
@@ -81,11 +82,11 @@ int TranscribeAudio(const ArrayWrapper<float>& audio)
 
 		// print some info about the processing
 		{
-			printf("processing audio (%d samples, %.1f sec), %d threads, %d processors, lang = %s, task = %s, %stimestamps = %d ...\n",
+			printf("processing audio (%d samples, %.1f sec), %d threads, %d processors, lang = %s, task = transcribe%s, %stimestamps = %d ...\n",
 				int(audio.size), float(audio.size) / WHISPER_SAMPLE_RATE,
 				wparams.n_threads, 1,
 				wparams.language,
-				wparams.translate ? "translate" : "transcribe",
+				wparams.translate ? " & translate" : "",
 				wparams.tdrz_enable ? "tdrz = 1, " : "",
 				wparams.print_timestamps ? 1 : 0);
 
