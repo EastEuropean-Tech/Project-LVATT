@@ -22,8 +22,8 @@ const int CutOffFrequency = 200000; /* 200Khz */
 //const int CutOffFrequency = 5000000; /* 5Mhz */
 
 /* Output */
-const int OutSampleRate = 48000; /* 48KHz */
-//const int OutSampleRate = 16000; /* 16KHz */
+//const int OutSampleRate = 48000; /* 48KHz */
+const int OutSampleRate = 16000; /* 16KHz */
 const int OutChannels = 1;
 
 int main()
@@ -65,13 +65,25 @@ int main()
 	WriteData(L"Test.wav", audio.data, audio.size, OutChannels, OutSampleRate);
 	audio.Delete();
 
+	//ArrayWrapper<float> audioRead = ReadFile(L"Test.wav");
+
 	auto stop = std::chrono::high_resolution_clock::now();
 
 	printf("Signal processing took: %lld milliseconds\n", std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count());
 
 	start = std::chrono::high_resolution_clock::now();
 
-	TranscribeAudio(audio);
+	char* input[8];
+	input[0] = (char*)R"(C:\Programing Projects\C++\Project LVATT\build\x64-release\LVATT\LVATT.exe)";
+	input[1] = (char*)R"(--threads)";
+	input[2] = (char*)R"(14)";
+	input[3] = (char*)R"(C:\Programing Projects\C++\Project LVATT\build\x64-release\LVATT\Test.wav)";
+	input[4] = (char*)"--model";
+	input[5] = (char*)R"(C:\Programing Projects\C++\Project LVATT\models\ggml-medium.bin)";
+	input[6] = (char*)"--language";
+	input[7] = (char*)"auto";
+
+	TranscribeAudio(8, input);
 
 	stop = std::chrono::high_resolution_clock::now();
 
