@@ -2,7 +2,7 @@
 
 project (LVATT)
 
-add_executable (${PROJECT_NAME} "LVATT.cpp" "Headers/dr_wav.h")
+add_executable (${PROJECT_NAME} "LVATT.cpp" )
 target_link_libraries(${PROJECT_NAME} PRIVATE -static DSPFilters)
 target_link_libraries(${PROJECT_NAME} PRIVATE -static whisper)
 

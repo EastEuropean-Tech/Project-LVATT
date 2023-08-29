@@ -63,9 +63,6 @@ int main()
 	/* write the data into a wav file */
 	printf("Writing audio signal to file\n");
 	WriteData(L"Test.wav", audio.data, audio.size, OutChannels, OutSampleRate);
-	audio.Delete();
-
-	//ArrayWrapper<float> audioRead = ReadFile(L"Test.wav");
 
 	auto stop = std::chrono::high_resolution_clock::now();
 
@@ -73,7 +70,8 @@ int main()
 
 	start = std::chrono::high_resolution_clock::now();
 
-	TranscribeAudio();
+	TranscribeAudio(audio);
+	audio.Delete();
 
 	stop = std::chrono::high_resolution_clock::now();
 

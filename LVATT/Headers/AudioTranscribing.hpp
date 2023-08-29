@@ -59,25 +59,13 @@ void whisper_print_segment_callback(struct whisper_context* ctx, struct whisper_
 	}
 }
 
-int TranscribeAudio()
+int TranscribeAudio(const ArrayWrapper<float>& audio)
 {
-	// whisper init
-
 	struct whisper_context* ctx = whisper_init_from_file(R"(C:\Programing Projects\C++\Project LVATT\models\ggml-medium.bin)");
 
 	if (ctx == nullptr) {
 		fprintf(stderr, "error: failed to initialize whisper context\n");
 		return 3;
-	}
-
-	std::string fname_inp = R"(C:\Programing Projects\C++\Project LVATT\build\x64-release\LVATT\Test.wav)";
-
-	std::vector<float> pcmf32;               // mono-channel F32 PCM
-	std::vector<std::vector<float>> pcmf32s; // stereo-channel F32 PCM
-
-	if (!::read_wav(fname_inp, pcmf32, pcmf32s, false)) {
-		fprintf(stderr, "error: failed to read WAV file '%s'\n", fname_inp.c_str());
-		return -1;
 	}
 
 	// run the inference
@@ -93,8 +81,8 @@ int TranscribeAudio()
 
 		// print some info about the processing
 		{
-			fprintf(stderr, "%s: processing '%s' (%d samples, %.1f sec), %d threads, %d processors, lang = %s, task = %s, %stimestamps = %d ...\n",
-				__func__, fname_inp.c_str(), int(pcmf32.size()), float(pcmf32.size()) / WHISPER_SAMPLE_RATE,
+			printf("processing audio (%d samples, %.1f sec), %d threads, %d processors, lang = %s, task = %s, %stimestamps = %d ...\n",
+				int(audio.size), float(audio.size) / WHISPER_SAMPLE_RATE,
 				wparams.n_threads, 1,
 				wparams.language,
 				wparams.translate ? "translate" : "transcribe",
@@ -104,7 +92,7 @@ int TranscribeAudio()
 			fprintf(stderr, "\n");
 		}
 
-		if (whisper_full_parallel(ctx, wparams, pcmf32.data(), pcmf32.size(), 1) != 0) {
+		if (whisper_full_parallel(ctx, wparams, audio.data, audio.size, 1) != 0) {
 			fprintf(stderr, "failed to process audio\n");
 			return 10;
 		}
