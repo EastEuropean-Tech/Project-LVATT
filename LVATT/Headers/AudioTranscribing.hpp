@@ -33,7 +33,7 @@ int timestamp_to_sample(int64_t t, int n_samples) {
 }
 
 /// <summary>
-/// Used to print trascribed text
+/// Used to print transcribed text
 /// </summary>
 /// <param name="ctx">- whisper context</param>
 /// <param name="">- whisper state</param>
