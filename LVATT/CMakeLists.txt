@@ -4,7 +4,7 @@ project (LVATT)
 
 add_executable (${PROJECT_NAME} "LVATT.cpp" )
 target_link_libraries(${PROJECT_NAME} PUBLIC -static DSPFilters)
-target_link_libraries(${PROJECT_NAME} PUBLIC -static whisperStatic)
+target_link_libraries(${PROJECT_NAME} PUBLIC -static whisper)
 
 # make executable static
 if(WIN32)

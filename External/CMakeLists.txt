@@ -12,8 +12,3 @@ endif()
 
 add_subdirectory(DSPFilters)
 add_subdirectory(whisper)
-
-get_target_property(WHISPER_SOURCES whisper SOURCES)
-list(TRANSFORM WHISPER_SOURCES PREPEND "whisper/")
-add_library(whisperStatic STATIC ${WHISPER_SOURCES})
-target_include_directories(whisperStatic PUBLIC "whisper/" )
