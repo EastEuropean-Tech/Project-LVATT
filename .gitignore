@@ -33,8 +33,8 @@ bld/
 [Ll]og/
 [Ll]ogs/
 [Bb]uild/
-#TEMP
-[Mm]odels/
+#don't update the models
+[Mm]odels/*.bin
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
