@@ -85,7 +85,7 @@ void WriteData(const std::filesystem::path& filePath, float* data, const size_t&
 	uint16_t* out = new uint16_t[dataSize];
 
 	f2les_array(data,out, dataSize, 1);
-	for (int i = 0; i <= dataSize; i++)
+	for (int i = 0; i < dataSize; i++)
 	{
 		wavWriteStream.write(reinterpret_cast<char*>(out+i), 2);
 	}
@@ -175,7 +175,7 @@ ArrayWrapper<float> ReadFile(const std::filesystem::path& filePath)
 	/* read the rest of the data into uint16_t (same size as float16) */
 
 	uint16_t* in = new uint16_t[dataSize];
-	for (int i = 0; i <= dataSize; i++)
+	for (int i = 0; i < dataSize; i++)
 	{
 		wavReadStream.read(reinterpret_cast<char*>(in + i), 2);
 	}

@@ -23,42 +23,15 @@ const int CutOffFrequency = 200000; /* 200Khz */
 
 /* Output */
 //const int OutSampleRate = 48000; /* 48KHz */
-const int OutSampleRate = 16000; /* 16KHz */
+const int OutSampleRate = 16000; /* 16KHz */ /* Whisper requires the audio to be of sample rate 16KHz */
 const int OutChannels = 1;
 
 int main()
 {
 	auto start = std::chrono::high_resolution_clock::now();
 
-	/* Open IQ file */
-	std::ifstream inputFile("Input.iq", std::ios::binary);
-	inputFile.seekg(0, std::ios::end);
-
-	/* Calculate number of samples and create array */
-	ArrayWrapper<std::complex<float>> ComplexSignal(inputFile.tellg() / sizeof(std::complex<float>));
-
-	/* reset stream position */
-	inputFile.seekg(0, std::ios::beg);
-
-	/* read data and put it into array */
-	printf("Reading complex signal from file\n");
-	inputFile.read(reinterpret_cast<char*>(ComplexSignal.data), ComplexSignal.size * sizeof(std::complex<float>));
-	inputFile.close();
-
-	/* do a low pass filter on the data */
-	printf("Filtering complex signal\n");
-	ArrayWrapper<std::complex<float>> filteredSignal = LowPassFilterComplex(ComplexSignal, InSampleRate, CutOffFrequency);
-	ComplexSignal.Delete();
-
-	/* down sample the data */
-	printf("Down sampling complex signal\n");
-	ArrayWrapper<std::complex<float>> downSampledSignal = DownSample(filteredSignal, InSampleRate, OutSampleRate);
-	filteredSignal.Delete();
-
-	/* do a FM demodulation on the data */
-	printf("FM Demodulating the complex signal\n");
-	ArrayWrapper<float> audio = fmDemodulate(downSampledSignal);
-	downSampledSignal.Delete();
+	/* input and demodulate IQ file */
+	ArrayWrapper<float> audio = IQtoAudio("Input.iq", InSampleRate, CutOffFrequency, OutSampleRate);
 
 	/* write the data into a wav file */
 	printf("Writing audio signal to file\n");
@@ -70,7 +43,8 @@ int main()
 
 	start = std::chrono::high_resolution_clock::now();
 
-	TranscribeAudio(audio);
+	/* take in the data and pass it to whisper for transcribing */
+	TranscribeAudio(audio, R"(ggml-medium.bin)");
 	audio.Delete();
 
 	stop = std::chrono::high_resolution_clock::now();

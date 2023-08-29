@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.hpp"
 
-#include "whisper.h"
+#include <whisper.h>
 
 #include <cmath>
 #include <fstream>
@@ -32,6 +32,13 @@ int timestamp_to_sample(int64_t t, int n_samples) {
 	return std::max(0, std::min((int)n_samples - 1, (int)((t * WHISPER_SAMPLE_RATE) / 100)));
 }
 
+/// <summary>
+/// Used to print trascribed text
+/// </summary>
+/// <param name="ctx">- whisper context</param>
+/// <param name="">- whisper state</param>
+/// <param name="n_new">- amount of new segments(?)</param>
+/// <param name="user_data">- user data past in when creating wparams</param>
 void whisper_print_segment_callback(struct whisper_context* ctx, struct whisper_state* /*state*/, int n_new, void* user_data)
 {
 	const int n_segments = whisper_full_n_segments(ctx);
@@ -59,9 +66,15 @@ void whisper_print_segment_callback(struct whisper_context* ctx, struct whisper_
 	}
 }
 
-int TranscribeAudio(const ArrayWrapper<float>& audio)
+/// <summary>
+/// transcribes audio stream
+/// </summary>
+/// <param name="audio">- audio data</param>
+/// <param name="modelPath">- path to model used for transcribing</param>
+/// <returns>will return none 0 number if failed</returns>
+int TranscribeAudio(const ArrayWrapper<float>& audio, const std::string& modelPath)
 {
-	struct whisper_context* ctx = whisper_init_from_file(R"(C:\Programing Projects\C++\Project LVATT\models\ggml-medium.bin)");
+	struct whisper_context* ctx = whisper_init_from_file(modelPath.c_str());
 
 	if (ctx == nullptr) {
 		fprintf(stderr, "error: failed to initialize whisper context\n");
@@ -75,7 +88,7 @@ int TranscribeAudio(const ArrayWrapper<float>& audio)
 		wparams.print_realtime = false;
 		wparams.language = "auto";
 		wparams.translate = true;
-		wparams.n_threads = 14;
+		wparams.n_threads = std::thread::hardware_concurrency();
 
 		wparams.new_segment_callback = whisper_print_segment_callback;
 		wparams.new_segment_callback_user_data = nullptr;
