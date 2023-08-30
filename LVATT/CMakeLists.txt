@@ -6,10 +6,8 @@ add_executable (${PROJECT_NAME} "LVATT.cpp" "Headers/AudioTranscribing.hpp" "Hea
 target_link_libraries(${PROJECT_NAME} -static DSPFilters)
 target_link_libraries(${PROJECT_NAME} -static whisper)
 
+set_property(TARGET ${PROJECT_NAME} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+
 # make executable static
-if(WIN32)
-target_compile_options(${PROJECT_NAME} PUBLIC /MT)
-target_link_options(${PROJECT_NAME} PUBLIC /INCREMENTAL:NO /NODEFAULTLIB:MSVCRT)
-endif(WIN32)
 
 #install(TARGETS ${PROJECT_NAME} DESTINATION bin)

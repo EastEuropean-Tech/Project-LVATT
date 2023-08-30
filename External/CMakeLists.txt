@@ -10,7 +10,5 @@ if((${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC))
   endif()
 endif()
 
-set(BUILD_SHARED_LIBS OFF)
-
 add_subdirectory(DSPFilters)
 add_subdirectory(Whisper)
