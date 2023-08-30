@@ -1,6 +1,4 @@
-﻿#define _USE_MATH_DEFINES
-#include <math.h>
-#include <iostream>
+﻿#include <iostream>
 #include <fstream>
 #include <vector>
 #include <complex>
@@ -35,7 +33,7 @@ int main()
 
 	/* write the data into a wav file */
 	printf("Writing audio signal to file\n");
-	WriteData(L"Test.wav", audio.data, audio.size, OutChannels, OutSampleRate);
+	WriteData(L"Output.wav", audio.data, audio.size, OutChannels, OutSampleRate);
 
 	auto stop = std::chrono::high_resolution_clock::now();
 

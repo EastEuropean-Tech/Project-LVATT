@@ -72,7 +72,7 @@ void whisper_print_segment_callback(struct whisper_context* ctx, struct whisper_
 /// <param name="audio">- audio data</param>
 /// <param name="modelPath">- path to model used for transcribing</param>
 /// <returns>will return none 0 number if failed</returns>
-int TranscribeAudio(const ArrayWrapper<float>& audio, const std::string& modelPath)
+int TranscribeAudio(const ArrayWrapper<float>& audio, const std::string& modelPath, const std::string& language = "auto", const int& threadCount = std::thread::hardware_concurrency())
 {
 	struct whisper_context* ctx = whisper_init_from_file(modelPath.c_str());
 
@@ -86,9 +86,9 @@ int TranscribeAudio(const ArrayWrapper<float>& audio, const std::string& modelPa
 		whisper_full_params wparams = whisper_full_default_params(WHISPER_SAMPLING_GREEDY);
 
 		wparams.print_realtime = false;
-		wparams.language = "auto";
+		wparams.language = language.c_str();
 		wparams.translate = true;
-		wparams.n_threads = std::thread::hardware_concurrency();
+		wparams.n_threads = threadCount;
 
 		wparams.new_segment_callback = whisper_print_segment_callback;
 		wparams.new_segment_callback_user_data = nullptr;

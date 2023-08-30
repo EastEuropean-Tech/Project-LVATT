@@ -1,3 +1,8 @@
+#include <string>
+#include <complex>
+#include <fstream>
+
+#include <DSPFilters/Dsp.h>
 #include "Common.hpp"
 
 /// <summary>
@@ -108,6 +113,8 @@ ArrayWrapper<float> IQtoAudio(const std::string& iqFileName, const size_t& fileS
 
 	/* reset stream position */
 	inputFile.seekg(0, std::ios::beg);
+
+	printf("Processing %s\nIn Sample rate: %zuHz\nSamples: %zuHz\nLenght: %fs\nOut Sample rate: %zuHz\n", iqFileName.c_str(), fileSampleRate, ComplexSignal.size, float(ComplexSignal.size)/float(fileSampleRate), outSampleRate);
 
 	/* read data and put it into array */
 	printf("Reading complex signal from file\n");
