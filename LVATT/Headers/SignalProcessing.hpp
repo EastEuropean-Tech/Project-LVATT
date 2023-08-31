@@ -1,9 +1,19 @@
 #include <string>
 #include <complex>
 #include <fstream>
+#include <iostream>
 
 #include <DSPFilters/Dsp.h>
 #include "Common.hpp"
+
+#include "../NosLib/String.hpp"
+
+struct InputFile
+{
+	std::string FilePath;
+	size_t FileSampleRate = 2000000;
+	size_t CutOffFrequency = 200000;
+};
 
 /// <summary>
 /// Do a low pass filter on a complex signal
@@ -12,11 +22,11 @@
 /// <param name="sampleRate">- signal's sample rate</param>
 /// <param name="cutOffFrequency">- frequency used for low pass</param>
 /// <returns>low passed signal</returns>
-ArrayWrapper<std::complex<float>> LowPassFilterComplex(ArrayWrapper<std::complex<float>> inputComplexSignal, const size_t& sampleRate, const size_t& cutOffFrequency)
+ArrayWrapper<std::complex<float>> LowPassFilterComplex(ArrayWrapper<std::complex<float>> inputComplexSignal, const size_t& sampleRate, const size_t& CutOffFrequency)
 {
 	/* set up a simple filter using the Chebyshev's type 2 low pass filter with 2 channels (inPhase and quadrature) */
 	Dsp::SimpleFilter<Dsp::ChebyshevII::LowPass<3>, 2> filter;
-	filter.setup(3, sampleRate, cutOffFrequency, 1);
+	filter.setup(3, sampleRate, CutOffFrequency, 1);
 
 	/* separate complex signal into 2 "channels" */
 	float* inPhase = new float[inputComplexSignal.size];
@@ -102,7 +112,7 @@ ArrayWrapper<float> fmDemodulate(ArrayWrapper<std::complex<float>> complexSignal
 /// </summary>
 /// <param name="iqFileName">- name to IQ file</param>
 /// <returns>array of floats</returns>
-ArrayWrapper<float> IQtoAudio(const std::string& iqFileName, const size_t& fileSampleRate, const size_t& cutOffFrequency, const size_t& outSampleRate)
+ArrayWrapper<float> IQtoAudio(const std::string& iqFileName, const size_t& FileSampleRate, const size_t& CutOffFrequency, const size_t& outSampleRate)
 {
 	/* Open IQ file */
 	std::ifstream inputFile(iqFileName, std::ios::binary);
@@ -114,7 +124,7 @@ ArrayWrapper<float> IQtoAudio(const std::string& iqFileName, const size_t& fileS
 	/* reset stream position */
 	inputFile.seekg(0, std::ios::beg);
 
-	printf("Processing %s\nIn Sample rate: %zuHz\nSamples: %zuHz\nLenght: %fs\nOut Sample rate: %zuHz\n", iqFileName.c_str(), fileSampleRate, ComplexSignal.size, float(ComplexSignal.size)/float(fileSampleRate), outSampleRate);
+	printf("Processing %s\nIn Sample rate: %zuHz\nSamples: %zuHz\nLenght: %fs\nOut Sample rate: %zuHz\n", iqFileName.c_str(), FileSampleRate, ComplexSignal.size, float(ComplexSignal.size)/float(FileSampleRate), outSampleRate);
 
 	/* read data and put it into array */
 	printf("Reading complex signal from file\n");
@@ -123,12 +133,12 @@ ArrayWrapper<float> IQtoAudio(const std::string& iqFileName, const size_t& fileS
 
 	/* do a low pass filter on the data */
 	printf("Filtering complex signal\n");
-	ArrayWrapper<std::complex<float>> filteredSignal = LowPassFilterComplex(ComplexSignal, fileSampleRate, cutOffFrequency);
+	ArrayWrapper<std::complex<float>> filteredSignal = LowPassFilterComplex(ComplexSignal, FileSampleRate, CutOffFrequency);
 	ComplexSignal.Delete();
 
 	/* down sample the data */
 	printf("Down sampling complex signal\n");
-	ArrayWrapper<std::complex<float>> downSampledSignal = DownSample(filteredSignal, fileSampleRate, outSampleRate);
+	ArrayWrapper<std::complex<float>> downSampledSignal = DownSample(filteredSignal, FileSampleRate, outSampleRate);
 	filteredSignal.Delete();
 
 	/* do a FM demodulation on the data */
@@ -137,4 +147,75 @@ ArrayWrapper<float> IQtoAudio(const std::string& iqFileName, const size_t& fileS
 	downSampledSignal.Delete();
 
 	return audio;
+}
+
+/* Input */
+const size_t DefaultInSampleRate = 2000000; /* 2Mhz */
+
+/* Low Pass Filter */
+const size_t DefaultCutOffFrequency = 200000; /* 200Khz */
+//const int CutOffFrequency = 5000000; /* 5Mhz */
+
+ArrayWrapper<InputFile> GatherUserInput()
+{
+	std::string paths;
+	printf("Input path to IQ file\\s [Seperate each path with ,]: ");
+	std::getline(std::cin, paths);
+
+	NosLib::DynamicArray<std::string> splitOut;
+	NosLib::String::Split<char>(&splitOut, paths, ',');
+
+	ArrayWrapper<InputFile> outArray(splitOut.GetItemCount());
+
+	for (int i = 0; i <= splitOut.GetLastArrayIndex(); i++)
+	{
+		InputFile currentInput;
+		currentInput.FilePath = splitOut[i];
+
+		while (true)
+		{
+			std::string input;
+			printf("Please input the sample rate for \"%s\" [Default:%zuHz]: ", splitOut[i].c_str(), DefaultInSampleRate);
+			std::getline(std::cin, input);
+
+			if (input.empty())
+			{
+				printf("Using default value: %zuHz\n", DefaultInSampleRate);
+				currentInput.FileSampleRate = DefaultInSampleRate;
+				break;
+			}
+
+			if (1 == sscanf(input.c_str(), "%zu", &currentInput.FileSampleRate))
+			{
+				break;
+			}
+
+			printf("Input was invalid, try again\n");
+		}
+		
+		while (true)
+		{
+			std::string input;
+			printf("Please input the Cut off frequency for \"%s\" [Default:%zuHz]: ", splitOut[i].c_str(), DefaultCutOffFrequency);
+			std::getline(std::cin, input);
+
+			if (input.empty())
+			{
+				printf("Using default value: %zuHz\n", DefaultCutOffFrequency);
+				currentInput.CutOffFrequency = DefaultCutOffFrequency;
+				break;
+			}
+
+			if (1 == sscanf(input.c_str(), "%zu", &currentInput.CutOffFrequency))
+			{
+				break;
+			}
+
+			printf("Input was invalid, try again\n");
+		}
+
+		outArray[i] = currentInput;
+	}
+
+	return outArray;
 }

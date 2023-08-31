@@ -11,13 +11,6 @@
 #include "Headers/SignalProcessing.hpp"
 #include "Headers/AudioTranscribing.hpp"
 
-/* Parameters */
-/* Input */
-const int InSampleRate = 2000000; /* 2Mhz */
-
-/* Low Pass Filter */
-const int CutOffFrequency = 200000; /* 200Khz */
-//const int CutOffFrequency = 5000000; /* 5Mhz */
 
 /* Output */
 //const int OutSampleRate = 48000; /* 48KHz */
@@ -28,26 +21,33 @@ int main()
 {
 	auto start = std::chrono::high_resolution_clock::now();
 
-	/* input and demodulate IQ file */
-	ArrayWrapper<float> audio = IQtoAudio("Input.iq", InSampleRate, CutOffFrequency, OutSampleRate);
+	ArrayWrapper<InputFile> files = GatherUserInput();
 
-	/* write the data into a wav file */
-	printf("Writing audio signal to file\n");
-	WriteData(L"Output.wav", audio.data, audio.size, OutChannels, OutSampleRate);
+	for (int i = 0; i < files.size; i++)
+	{
+		/* input and demodulate IQ file */
+		ArrayWrapper<float> audio = IQtoAudio(files[i].FilePath, files[i].FileSampleRate, files[i].CutOffFrequency, OutSampleRate);
 
-	auto stop = std::chrono::high_resolution_clock::now();
+		/* write the data into a wav file */
+		printf("Writing audio signal to file\n");
+		WriteData(files[i].FilePath.substr(0,files[i].FilePath.find_last_of('.')) + ".wav", audio.data, audio.size, OutChannels, OutSampleRate);
 
-	printf("Signal processing took: %lld milliseconds\n", std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count());
+		auto stop = std::chrono::high_resolution_clock::now();
 
-	start = std::chrono::high_resolution_clock::now();
+		printf("Signal processing took: %lld milliseconds\n", std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count());
 
-	/* take in the data and pass it to whisper for transcribing */
-	TranscribeAudio(audio, R"(ggml-medium.bin)");
-	audio.Delete();
+		start = std::chrono::high_resolution_clock::now();
 
-	stop = std::chrono::high_resolution_clock::now();
+		/* take in the data and pass it to whisper for transcribing */
+		TranscribeAudio(audio, R"(ggml-medium.bin)");
+		audio.Delete();
 
-	printf("Audio Transcribing took: %lld milliseconds\n", std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count());
+		stop = std::chrono::high_resolution_clock::now();
+
+		printf("Audio Transcribing took: %lld milliseconds\n", std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count());
+	}
+
+	files.Delete();
 
 	printf("Press any button to continue"); std::cin.get();
 	return 0;
