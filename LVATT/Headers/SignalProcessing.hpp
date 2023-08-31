@@ -170,7 +170,7 @@ ArrayWrapper<InputFile> GatherUserInput()
 	for (int i = 0; i <= splitOut.GetLastArrayIndex(); i++)
 	{
 		InputFile currentInput;
-		currentInput.FilePath = splitOut[i];
+		currentInput.FilePath = NosLib::String::Trim(splitOut[i]);
 
 		while (true)
 		{

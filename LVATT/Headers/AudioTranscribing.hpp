@@ -66,6 +66,8 @@ void whisper_print_segment_callback(struct whisper_context* ctx, struct whisper_
 	}
 }
 
+inline whisper_context* ctx = nullptr;
+
 /// <summary>
 /// transcribes audio stream
 /// </summary>
@@ -74,9 +76,13 @@ void whisper_print_segment_callback(struct whisper_context* ctx, struct whisper_
 /// <returns>will return none 0 number if failed</returns>
 int TranscribeAudio(const ArrayWrapper<float>& audio, const std::string& modelPath, const std::string& language = "auto", const int& threadCount = std::thread::hardware_concurrency())
 {
-	struct whisper_context* ctx = whisper_init_from_file(modelPath.c_str());
+	if (ctx == nullptr) /* if is nullptr (failed last time or first time loading), load from file */
+	{
+		ctx = whisper_init_from_file(modelPath.c_str());
+	}
 
-	if (ctx == nullptr) {
+	if (ctx == nullptr)
+	{
 		fprintf(stderr, "error: failed to initialize whisper context\n");
 		return 3;
 	}
@@ -114,7 +120,16 @@ int TranscribeAudio(const ArrayWrapper<float>& audio, const std::string& modelPa
 	printf("\n");
 
 	whisper_print_timings(ctx);
-	whisper_free(ctx);
 
 	return 0;
+}
+
+/// <summary>
+/// Needs to get called at the end of the programs execution (when whisper isn't being used anymore)
+/// </summary>
+void FreeWhisperContext()
+{
+	whisper_free(ctx);
+
+	ctx = nullptr; /* set to nullptr, if for whatever reason above function gets called again */
 }

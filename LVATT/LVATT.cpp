@@ -48,6 +48,7 @@ int main()
 	}
 
 	files.Delete();
+	FreeWhisperContext();
 
 	printf("Press any button to continue"); std::cin.get();
 	return 0;
