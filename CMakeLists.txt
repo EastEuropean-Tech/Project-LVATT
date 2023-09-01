@@ -14,8 +14,9 @@ message(STATUS "CMAKE_CXX_FLAGS_RELEASE = ${CMAKE_CXX_FLAGS_RELEASE}")
 message(STATUS "CMAKE_C_FLAGS = ${CMAKE_C_FLAGS}")
 message(STATUS "CMAKE_C_FLAGS_RELEASE = ${CMAKE_C_FLAGS_RELEASE}")
 
+set(OPENSSL_USE_STATIC_LIBS TRUE)
 option(BUILD_SHARED_LIBS "Link Statically" OFF)
-option(HTTPLIB_USE_OPENSSL_IF_AVAILABLE "Link Statically" ON)
+option(HTTPLIB_REQUIRE_OPENSSL "Require SSL" ON)
 
 # Include sub-projects.
 add_subdirectory (External)
