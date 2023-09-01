@@ -1,4 +1,6 @@
-#pragma once
+﻿#pragma once
+#include "FileDownloading.hpp"
+
 #include "Common.hpp"
 
 #include <whisper.h>
@@ -10,6 +12,8 @@
 #include <thread>
 #include <vector>
 #include <cstring>
+#include <iostream>
+#include <format>
 
 //  500 -> 00:05.000
 // 6000 -> 01:00.000
@@ -132,4 +136,26 @@ void FreeWhisperContext()
 	whisper_free(ctx);
 
 	ctx = nullptr; /* set to nullptr, if for whatever reason above function gets called again */
+}
+
+
+std::string GetModel()
+{
+	std::string input;
+	printf("Please input either the path to a model\nOr choose one from here (if not already, will get automatically downloaded)\ntiny\nbase\nsmall\nmedium\nlarge\n[Default = medium]: ");
+	getline(std::cin, input);
+
+	if (input.empty())
+	{
+		input = "medium";
+	}
+
+	if (input == "tiny" || input == "base" || input == "medium" || input == "large")
+	{
+		std::string outFileName = std::format("ggml-{}.bin", input);
+		DownloadFile("https://huggingface.co/ggerganov/whisper.cpp/resolve/main/"+ outFileName, outFileName);
+		return outFileName;
+	}
+
+	return input;
 }

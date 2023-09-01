@@ -12,3 +12,4 @@ endif()
 
 add_subdirectory(DSPFilters)
 add_subdirectory(Whisper)
+add_subdirectory(HTTPLib)

@@ -1,3 +1,6 @@
 [submodule "External/Whisper"]
 	path = External/Whisper
 	url = https://github.com/ggerganov/whisper.cpp.git
+[submodule "External/HTTPLib"]
+	path = External/HTTPLib
+	url = https://github.com/yhirose/cpp-httplib

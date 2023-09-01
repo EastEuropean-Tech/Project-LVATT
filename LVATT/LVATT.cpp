@@ -1,4 +1,9 @@
-﻿#include <iostream>
+﻿
+#include "Headers/AudioTranscribing.hpp"
+#include "Headers/WAV.hpp"
+#include "Headers/SignalProcessing.hpp"
+
+#include <iostream>
 #include <fstream>
 #include <vector>
 #include <complex>
@@ -6,11 +11,6 @@
 #include <chrono>
 
 #include <DspFilters/Dsp.h>
-
-#include "Headers/WAV.hpp"
-#include "Headers/SignalProcessing.hpp"
-#include "Headers/AudioTranscribing.hpp"
-
 
 /* Output */
 //const int OutSampleRate = 48000; /* 48KHz */
@@ -22,6 +22,8 @@ int main()
 	auto start = std::chrono::high_resolution_clock::now();
 
 	ArrayWrapper<InputFile> files = GatherUserInput();
+
+	std::string modelPath = GetModel();
 
 	for (int i = 0; i < files.size; i++)
 	{
@@ -39,7 +41,7 @@ int main()
 		start = std::chrono::high_resolution_clock::now();
 
 		/* take in the data and pass it to whisper for transcribing */
-		TranscribeAudio(audio, R"(ggml-medium.bin)");
+		TranscribeAudio(audio, modelPath);
 		audio.Delete();
 
 		stop = std::chrono::high_resolution_clock::now();
