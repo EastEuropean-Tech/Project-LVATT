@@ -11,3 +11,11 @@ mkdir build; cd build
 cmake ..
 cmake --build . --config Release
 ```
+
+### OpenSSL
+Here is the command used for building OpenSSL
+```Bash
+perl Configure VC-WIN64A --no-shared --static -static --prefix="{LIBS PATH}" --openssldir="{OPENSSL PATH}"
+nmake
+nmake install
+```
