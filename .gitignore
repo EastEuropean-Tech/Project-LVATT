@@ -33,8 +33,6 @@ bld/
 [Ll]og/
 [Ll]ogs/
 [Bb]uild/
-#don't update the models
-[Mm]odels/*.bin
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
