@@ -143,7 +143,7 @@ void FreeWhisperContext()
 std::string GetModel()
 {
 	std::string input;
-	printf("Please input either the path to a model\nOr choose one from here (if not already, will get automatically downloaded)\ntiny\nbase\nsmall\nmedium\nlarge\n[Default = medium]: ");
+	printf("\nPlease input either the path to a model\nOr choose one from here (if not already, will get automatically downloaded)\ntiny\nbase\nsmall\nmedium\nlarge\n[Default = medium]: ");
 	getline(std::cin, input);
 
 	if (input.empty())

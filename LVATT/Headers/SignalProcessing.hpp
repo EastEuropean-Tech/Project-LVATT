@@ -2,6 +2,7 @@
 #include <complex>
 #include <fstream>
 #include <iostream>
+#include <filesystem>
 
 #include <DSPFilters/Dsp.h>
 #include "Common.hpp"
@@ -112,10 +113,16 @@ ArrayWrapper<float> fmDemodulate(ArrayWrapper<std::complex<float>> complexSignal
 /// </summary>
 /// <param name="iqFileName">- name to IQ file</param>
 /// <returns>array of floats</returns>
-ArrayWrapper<float> IQtoAudio(const std::string& iqFileName, const size_t& FileSampleRate, const size_t& CutOffFrequency, const size_t& outSampleRate)
+ArrayWrapper<float> IQtoAudio(const std::string& iqFilePath, const size_t& FileSampleRate, const size_t& CutOffFrequency, const size_t& outSampleRate)
 {
+	if (!std::filesystem::exists(iqFilePath)) /* if doesn't exist, just return */
+	{
+		printf("not file found at: %s\n", iqFilePath.c_str());
+		return ArrayWrapper<float>();
+	}
+
 	/* Open IQ file */
-	std::ifstream inputFile(iqFileName, std::ios::binary);
+	std::ifstream inputFile(iqFilePath, std::ios::binary);
 	inputFile.seekg(0, std::ios::end);
 
 	/* Calculate number of samples and create array */
@@ -124,7 +131,7 @@ ArrayWrapper<float> IQtoAudio(const std::string& iqFileName, const size_t& FileS
 	/* reset stream position */
 	inputFile.seekg(0, std::ios::beg);
 
-	printf("Processing %s\nIn Sample rate: %zuHz\nSamples: %zuHz\nLenght: %fs\nOut Sample rate: %zuHz\n", iqFileName.c_str(), FileSampleRate, ComplexSignal.size, float(ComplexSignal.size)/float(FileSampleRate), outSampleRate);
+	printf("Processing %s\nIn Sample rate: %zuHz\nSamples: %zuHz\nLenght: %fs\nOut Sample rate: %zuHz\n", iqFilePath.c_str(), FileSampleRate, ComplexSignal.size, float(ComplexSignal.size)/float(FileSampleRate), outSampleRate);
 
 	/* read data and put it into array */
 	printf("Reading complex signal from file\n");
@@ -159,7 +166,7 @@ const size_t DefaultCutOffFrequency = 200000; /* 200Khz */
 ArrayWrapper<InputFile> GatherUserInput()
 {
 	std::string paths;
-	printf("Input path to IQ file\\s [Seperate each path with ,]: ");
+	printf("Input path to IQ file\\s [Separate each path with ,]: ");
 	std::getline(std::cin, paths);
 
 	NosLib::DynamicArray<std::string> splitOut;
@@ -175,7 +182,7 @@ ArrayWrapper<InputFile> GatherUserInput()
 		while (true)
 		{
 			std::string input;
-			printf("Please input the sample rate for \"%s\" [Default:%zuHz]: ", splitOut[i].c_str(), DefaultInSampleRate);
+			printf("\nPlease input the sample rate for \"%s\" [Default:%zuHz]: ", splitOut[i].c_str(), DefaultInSampleRate);
 			std::getline(std::cin, input);
 
 			if (input.empty())
@@ -196,7 +203,7 @@ ArrayWrapper<InputFile> GatherUserInput()
 		while (true)
 		{
 			std::string input;
-			printf("Please input the Cut off frequency for \"%s\" [Default:%zuHz]: ", splitOut[i].c_str(), DefaultCutOffFrequency);
+			printf("\nPlease input the Cut off frequency for \"%s\" [Default:%zuHz]: ", splitOut[i].c_str(), DefaultCutOffFrequency);
 			std::getline(std::cin, input);
 
 			if (input.empty())

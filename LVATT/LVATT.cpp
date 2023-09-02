@@ -30,6 +30,12 @@ int main()
 		/* input and demodulate IQ file */
 		ArrayWrapper<float> audio = IQtoAudio(files[i].FilePath, files[i].FileSampleRate, files[i].CutOffFrequency, OutSampleRate);
 
+		if (audio.data == nullptr)
+		{
+			printf("No audio signal generated (most likely file doesn't exist)\nskipping...\n");
+			continue;
+		}
+
 		/* write the data into a wav file */
 		printf("Writing audio signal to file\n");
 		WriteData(files[i].FilePath.substr(0,files[i].FilePath.find_last_of('.')) + ".wav", audio.data, audio.size, OutChannels, OutSampleRate);
