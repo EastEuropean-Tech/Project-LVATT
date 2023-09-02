@@ -5,14 +5,15 @@ set(CMAKE_CXX_STANDARD 20)
 project ("Project LVATT")
 
 if(WIN32)
+message(STATUS "Using /MT flag on windows")
 add_compile_options (/MT)
-endif(WIN32)
+elseif(UNIX)
+message(STATUS "Using -static flag on linux")
+add_compile_options ("-static")
+endif()
+
 
 message(STATUS "CMAKE_CXX_STANDARD = ${CMAKE_CXX_STANDARD}")
-message(STATUS "CMAKE_CXX_FLAGS = ${CMAKE_CXX_FLAGS}")
-message(STATUS "CMAKE_CXX_FLAGS_RELEASE = ${CMAKE_CXX_FLAGS_RELEASE}")
-message(STATUS "CMAKE_C_FLAGS = ${CMAKE_C_FLAGS}")
-message(STATUS "CMAKE_C_FLAGS_RELEASE = ${CMAKE_C_FLAGS_RELEASE}")
 
 set(OPENSSL_USE_STATIC_LIBS TRUE CACHE BOOL "Statically Linking Open SSL")
 option(BUILD_SHARED_LIBS "Link Statically" OFF)

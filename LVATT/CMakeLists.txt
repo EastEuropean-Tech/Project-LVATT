@@ -10,9 +10,6 @@ target_link_libraries(${PROJECT_NAME} -static DSPFilters)
 target_link_libraries(${PROJECT_NAME} -static whisper)
 target_link_libraries(${PROJECT_NAME} -static httplib::httplib)
 
-
-set_property(TARGET ${PROJECT_NAME} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-
 # make executable static
 
 #install(TARGETS ${PROJECT_NAME} DESTINATION bin)

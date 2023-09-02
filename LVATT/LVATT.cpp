@@ -10,8 +10,6 @@
 #include <format>
 #include <chrono>
 
-#include <DspFilters/Dsp.h>
-
 /* Output */
 //const int OutSampleRate = 48000; /* 48KHz */
 const int OutSampleRate = 16000; /* 16KHz */ /* Whisper requires the audio to be of sample rate 16KHz */
