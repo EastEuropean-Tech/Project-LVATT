@@ -49,13 +49,11 @@ void DownloadFile(const std::string& url, const std::string& outFilePath)
 	httplib::Client downloadClient(fileUrl.Host);
 
 	/* set properties */
-	downloadClient.set_follow_location(false);
+	downloadClient.set_follow_location(true);
 	downloadClient.set_keep_alive(false);
 	downloadClient.set_default_headers({{"User-Agent", "Norzka-Gamma-Installer (cpp-httplib)"}});
 
-	std::ofstream downloadFileStream(outFilePath);
-
-	printf("\033[ 7");
+	std::ofstream downloadFileStream(outFilePath, std::ios::binary);
 
 	httplib::Result res = downloadClient.Get(fileUrl.Path,
 		[&](const char* data, size_t data_length)
@@ -66,10 +64,14 @@ void DownloadFile(const std::string& url, const std::string& outFilePath)
 		},
 		[&](uint64_t len, uint64_t total)
 		{
-			printf("%f Done", float(len) / float(total));
-			printf("\033[ 8");
+			if (len % 397 != 0 && float(len) / float(total) != 1.0f) /* don't print all the time as it is expensive, just do mod of len with random prime number */
+			{
+				return true;
+			}
+			printf("\r%f%%", (float(len) / float(total))*100.0f);
 			return true; // return 'false' if you want to cancel the request.
 		});
+	printf("\n");
 
 	downloadFileStream.close();
 

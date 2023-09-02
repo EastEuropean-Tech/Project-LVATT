@@ -14,6 +14,7 @@
 #include <cstring>
 #include <iostream>
 #include <format>
+#include <filesystem>
 
 //  500 -> 00:05.000
 // 6000 -> 01:00.000
@@ -150,10 +151,15 @@ std::string GetModel()
 		input = "medium";
 	}
 
-	if (input == "tiny" || input == "base" || input == "medium" || input == "large")
+	if (input == "tiny" || input == "base" || input == "small" || input == "medium" || input == "large")
 	{
 		std::string outFileName = std::format("ggml-{}.bin", input);
-		DownloadFile("https://huggingface.co/ggerganov/whisper.cpp/resolve/main/"+ outFileName, outFileName);
+
+		if (!std::filesystem::exists(outFileName))
+		{
+			DownloadFile("https://huggingface.co/ggerganov/whisper.cpp/resolve/main/"+ outFileName, outFileName);
+		}
+
 		return outFileName;
 	}
 

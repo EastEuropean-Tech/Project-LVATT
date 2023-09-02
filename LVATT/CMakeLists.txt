@@ -2,10 +2,14 @@
 
 project (LVATT)
 
+find_package(OpenSSL REQUIRED)
+include_directories(${OPENSSL_INCLUDE_DIR})
+
 add_executable (${PROJECT_NAME} "LVATT.cpp" "Headers/AudioTranscribing.hpp" "Headers/Common.hpp" "Headers/SignalProcessing.hpp" "Headers/WAV.hpp")
 target_link_libraries(${PROJECT_NAME} -static DSPFilters)
 target_link_libraries(${PROJECT_NAME} -static whisper)
 target_link_libraries(${PROJECT_NAME} -static httplib::httplib)
+
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
