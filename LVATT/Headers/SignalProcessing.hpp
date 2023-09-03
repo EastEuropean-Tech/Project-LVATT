@@ -4,7 +4,7 @@
 #include <iostream>
 #include <filesystem>
 
-#include <DSPFilters/Dsp.h>
+#include <DspFilters/Dsp.h>
 #include "Common.hpp"
 
 #include "../NosLib/String.hpp"

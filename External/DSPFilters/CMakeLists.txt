@@ -11,6 +11,6 @@ endif()
 file(GLOB SOURCE_LIB "./source/*.cpp")
 
 add_library(${PROJECT_NAME} ${SOURCE_LIB})
-target_include_directories(${PROJECT_NAME} PUBLIC ${DSPFiltersHeaders})
+target_include_directories(${PROJECT_NAME} PUBLIC "./include/")
 
 #set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON)
