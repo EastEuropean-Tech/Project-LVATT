@@ -50,8 +50,8 @@ void DownloadFile(const std::string& url, const std::string& outFilePath)
 
 	/* set properties */
 	downloadClient.set_follow_location(true);
-	downloadClient.set_keep_alive(false);
-	downloadClient.set_default_headers({{"User-Agent", "Norzka-Gamma-Installer (cpp-httplib)"}});
+	downloadClient.set_keep_alive(true);
+	downloadClient.set_default_headers({{"User-Agent", "Project LVATT (cpp-httplib)"}});
 
 	std::ofstream downloadFileStream(outFilePath, std::ios::binary);
 
@@ -72,6 +72,58 @@ void DownloadFile(const std::string& url, const std::string& outFilePath)
 			return true; // return 'false' if you want to cancel the request.
 		});
 	printf("\n");
+
+	if (!res)
+	{
+		std::string errorMessage;
+		switch (res.error())
+		{
+		case httplib::Error::Success:
+			errorMessage = "Success";
+			break;
+		case httplib::Error::Unknown:
+			errorMessage = "Unknown";
+			break;
+		case httplib::Error::Connection:
+			errorMessage = "Connection";
+			break;
+		case httplib::Error::BindIPAddress:
+			errorMessage = "Bind IP Address";
+			break;
+		case httplib::Error::Read:
+			errorMessage = "Read ";
+			break;
+		case httplib::Error::Write:
+			errorMessage = "Write";
+			break;
+		case httplib::Error::ExceedRedirectCount:
+			errorMessage = "Exceed Redirect Count";
+			break;
+		case httplib::Error::Canceled:
+			errorMessage = "Cancelled";
+			break;
+		case httplib::Error::SSLConnection:
+			errorMessage = "SSL Connection";
+			break;
+		case httplib::Error::SSLLoadingCerts:
+			errorMessage = "SSL Loading Certs";
+			break;
+		case httplib::Error::SSLServerVerification:
+			errorMessage = "SSL Server Verification";
+			break;
+		case httplib::Error::UnsupportedMultipartBoundaryChars:
+			errorMessage = "Unsupported Multipart Boundary Chars";
+			break;
+		case httplib::Error::Compression:
+			errorMessage = "Compression";
+			break;
+		case httplib::Error::ConnectionTimeout:
+			errorMessage = "Connection Timeout";
+			break;
+		}
+		printf((errorMessage + "\n").c_str());
+		exit(-1);
+	}
 
 	downloadFileStream.close();
 

@@ -1,5 +1,4 @@
-﻿
-#include "Headers/AudioTranscribing.hpp"
+﻿#include "Headers/AudioTranscribing.hpp"
 #include "Headers/WAV.hpp"
 #include "Headers/SignalProcessing.hpp"
 
