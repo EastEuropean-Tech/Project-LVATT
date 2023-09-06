@@ -1,6 +1,7 @@
 ﻿#pragma once
 #define ﻿CPPHTTPLIB_OPENSSL_SUPPORT
 #include <httplib.h>
+#include <cmath>
 
 struct HostPath
 {
@@ -64,11 +65,16 @@ void DownloadFile(const std::string& url, const std::string& outFilePath)
 		},
 		[&](uint64_t len, uint64_t total)
 		{
-			if (len % 397 != 0 && float(len) / float(total) != 1.0f) /* don't print all the time as it is expensive, just do mod of len with random prime number */
+			float percentDone = (float(len) / float(total))*100;
+
+			static float previousPercent = 0.0f;
+
+			if (previousPercent >= std::floor(percentDone) && percentDone != 1.0f) /* don't print all the time as it is expensive, only print if it has gone at least 1% up */
 			{
 				return true;
 			}
-			printf("\r%f%%", (float(len) / float(total))*100.0f);
+			previousPercent = percentDone;
+			printf("\r%f%%", previousPercent);
 			return true; // return 'false' if you want to cancel the request.
 		});
 	printf("\n");
